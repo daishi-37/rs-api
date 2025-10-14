@@ -2,6 +2,7 @@ import os
 import uuid
 import subprocess
 import time
+import shutil
 from datetime import datetime
 from fastapi import UploadFile
 from app.schemas import media
@@ -49,9 +50,10 @@ def split_by_size(file: UploadFile, size: int = 25) -> media.ResBase:
         input_filename = f"{file_id}_input{os.path.splitext(file.filename)[1]}"
         input_path = os.path.join(MEDIA_DIR, input_filename)
         
-        content = file.file.read()
+        # ストリームからファイルに直接コピーし、メモリ使用量を削減
         with open(input_path, "wb") as f:
-            f.write(content)
+            file.file.seek(0)
+            shutil.copyfileobj(file.file, f)
         
         file_info_cmd = [
             "ffprobe", 
