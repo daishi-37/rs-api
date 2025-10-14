@@ -1,19 +1,10 @@
-from typing import Optional, List
+from typing import List
 from pydantic import BaseModel, Field
 from app.schemas import base
 
 
 class ResBase(BaseModel):
-    msg: str = Field(..., example="slack message")
+    media_urls: List[str] = Field(..., example=[], description="分割されたメディアのURLリスト")
 
-
-class ReqBase(BaseModel):
-    msg: str = Field(..., example="slack push successfully")
-
-
-class ResPush(ResBase):
-    pass
-
-
-class ReqPush(ReqBase):
+class ResSplit(ResBase):
     pass
