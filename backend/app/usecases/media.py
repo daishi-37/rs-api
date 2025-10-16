@@ -11,7 +11,7 @@ from app.core import settings
 
 
 MEDIA_DIR = os.path.join(settings.UPLOAD_DIR, "media")  # メディアファイルの保存先ディレクトリ
-FILE_RETENTION_PERIOD = 24 * 10 * 60                    # ファイルの保持期間（秒） 
+FILE_RETENTION_PERIOD = 24 * 60 * 60                    # ファイルの保持期間（秒） 
 
 
 def clean_files() -> None:
@@ -44,6 +44,7 @@ def clean_files() -> None:
 
 
 def split_by_size(file: UploadFile, size: int = 25) -> media.ResBase:
+    main_logger.info("-------- メディアファイル分割処理：開始 -----")
     try:
         now = datetime.now().strftime("%Y%m%d")
         file_id = f"{now}_{uuid.uuid4().hex[:8]}"
@@ -98,7 +99,7 @@ def split_by_size(file: UploadFile, size: int = 25) -> media.ResBase:
         media_urls = []
         for split_file in sorted(split_files):
             # 新しいマウント設定に合わせたURLパス構造
-            url = f"{settings.BASE_URL}/{settings.BASE_PATH}/uploads/media/{split_file}"
+            url = f"{settings.BASE_URL}{settings.BASE_PATH}/uploads/media/{split_file}"
             media_urls.append(url)
             
             # 検証のために各ファイルの存在確認と権限をログに記録
